@@ -1,0 +1,44 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  color: black;
+}
+
+.h1 a {
+  color: blue;
+}
+
+h1{
+  font-family: "Raleway", sans-serif;
+}
+
+
+.nav-menu {
+  padding-top: 25px;
+}
+
+.nav-menu * {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+
+.nav-menu a {
+  display: flex;
+  align-items: center;
+  color: black;
+  padding: 10px 20px;
+  margin-bottom: 8px;
+  transition: 0.3s;
+  font-size: 20px;
+}
+
+
+.nav-menu a i {
+  padding-right: 8px;
+}
+
+.nav-menu a:hover, .nav-menu .active > a, .nav-menu li:hover > a {
+  text-decoration: none;
+  color: blue;
+}

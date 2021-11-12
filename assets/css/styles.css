@@ -729,7 +729,7 @@ footer {
 }
 
 .banner-cover {
-    background-image: url(../img/banner.png);
+    background-image: url(../img/banner_2_2.jpg);
     height: 100vh;
 }
 
@@ -755,7 +755,7 @@ footer {
 }
 
 .banner-cover {
-    background-image: url(../img/banner.png);
+    background-image: url(../img/banner_2_2.jpg);
     height: 100vh;
 }
 
@@ -797,7 +797,7 @@ footer {
 
 @media screen and (min-width: 1023px) {
     .banner-cover {
-        background-image: url(../img/banner-large.jpg);
+        background-image: url(../img/banner_2_2.jpg);
     }
 }
 
@@ -1215,7 +1215,12 @@ footer {
 
 .btn-default {
     color: var(--dark);
-    border: solid 1px var(--dark);
+    border: solid 5px var(--dark);
+}
+
+.btn-sale {
+    color: var(--primary);
+    border: solid 5px var(--primary);
 }
 
 .btn-default:hover {

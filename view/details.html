@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/normalize.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/styles_admin.css">
+    <title>Detalles del producto</title>
+</head>
+<body>
+    <!--BANNER-->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">        
+        <a class="navbar-brand" href="#">Mi Tienda</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="container">                
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home </a>
+                    </li>                    
+                </ul> 
+            </div>
+            <div class="mt-2 mt-md-0">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Carrito</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Usuario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Salir</a>
+                    </li>                    
+                </ul> 
+            </div>
+        </div>
+    </nav>
+
+    <!--CONTAINER-->
+    <div class="container">
+        <div class="card ">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <h3 class="d-inline-block d-sm-none">LOWA Men’s Renegade GTX Mid Hiking Boots Review</h3>
+                        <div class="col-12">
+                            <img src="https://media.aws.alkosto.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/t/e/teclado-eco.jpg" alt="..." height="400px" width="400px"class="product-image" alt="Product Image">                            
+                          </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <h3 class="my-3">LOWA Men’s Renegade GTX Mid Hiking Boots Review</h3>
+                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terr.</p>
+                        <hr>
+
+                        <form action="#" id="compraPD" method="post">
+                            <div class="mt-4">
+                                <div class="form-group">
+                                    <label for="cantPD">Cantidad</label>
+                                    <input type="number" class="form-control" id="cantPD" aria-describedby="emailHelp">                                    
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="stockAPD">Stock</label>
+                                    <input class="form-control" id="stockAPD" type="text" placeholder="Stock" readonly>
+                                  </div>
+                            </div>
+                            <div class="mt-4">                                
+                                <a href="#" id="btnAddCartPD" class="btn btn-primary btn-lg btn-flat">Add to Cart</a>                                        
+                                <a href="#" id="btnCompPD" class="btn btn-success btn-lg btn-flat">Comprar</a>
+                              </div>
+                        </form>                        
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer"></div>
+        </div>
+    </div>
+
+
+
+    <!--MODAL-->
+    <div class="modal fade" id="modal_c">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Comprar el producto</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/main_v_client.js"></script>
+
+</body>
+</html>
