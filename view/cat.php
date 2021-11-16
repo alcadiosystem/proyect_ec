@@ -1,3 +1,22 @@
+<?php
+
+$get;
+
+if(isset($_GET['id'])){
+    $get = $_GET['id'];
+}else{
+    echo "<script language=\"javascript\">
+            window.location.href=\"index.php\";
+            </script>";
+}
+
+include '../controller/VentaController.php';
+$controller = new VentaController();
+$session = $controller->getSession();
+$listP = $controller->getListProductByIDCat($get);
+$listC = $controller->getListCategoria();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +39,7 @@
             <div class="container">                
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home </a>
+                        <a class="nav-link" href="index.php">Home </a>
                     </li>                    
                 </ul> 
             </div>
@@ -30,11 +49,28 @@
                         <a class="nav-link" href="#">Carrito</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Usuario</a>
+                        <?php 
+                        if($session){                        
+                        ?>
+                          <a class="nav-link" href="#"><?php echo $session['NOM'];?></a>
+                        <?php
+                        }else{
+                        ?>
+                        <a class="nav-link" href="../view/login/index.php">Login</a>
+                        <?php } ?>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Salir</a>
-                    </li>                    
+                      <?php 
+                        if($session){                        
+                        ?>
+                          <form id="frm_logout" name="frm_logout" action="../../service/serviceAuth.php"  method="post">
+                            <input type="hidden" name="txtOp" value="1">
+                            <a class="nav-link" onclick="logout()" href="#">Salir</a>
+                          </form>
+                        <?php
+                        }
+                        ?>
+                    </li>                  
                 </ul> 
             </div>
         </div>
@@ -47,29 +83,37 @@
                 <div class="card">
                     <div class="card-header">Categorias</div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><a href="#">Categoria #1</a></li>
-                        <li class="list-group-item"><a href="#">Categoria #2</a></li>
-                        <li class="list-group-item"><a href="#">Categoria #3</a></li>
-                        <li class="list-group-item"><a href="#">Categoria #4</a></li>
+                        <?php
+                          foreach($listC as $c){                          
+                        ?>
+                            <li class="list-group-item"><a href="cat.php?id=<?php echo $c['ID'];?>"><?php echo $c['NOM'];?></a></li>
+                        <?php
+                          }
+                        ?>
                     </ul>
                 </div>
             </div>
-            <div class="col-8">                
-                <div class="card mb-3">
+            <div class="col-8">
+                <?php
+                  foreach($listP as $p){
+                ?>
+                  <div class="card mb-3">
                     <div class="row no-gutters">
                       <div class="col-md-4">
-                        <img src="https://media.aws.alkosto.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/t/e/teclado-eco.jpg" alt="..." height="200px" width="200px">
+                        <img src="<?php echo $p['IMG'];?>" alt="..." height="200px" width="200px">
                       </div>
                       <div class="col-md-8">
                         <div class="card-body">
-                          <h5 class="card-title">Teclado Mecanico</h5>
-                          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                          <p class="card-text"><small class="text-muted">En stock: 45</small></p>
+                          <h5 class="card-title"><?php echo $p['NOM'];?></h5>
+                          <p class="card-text"><?php echo $p['DES'];?></p>
                         </div>
-                        <div class="card-footer d-flex"><a href="#" onclick="modal_add_cart_idex(5)" class="btn btn-primary">Agregar al carrito</a> <a href="http://localhost/proyect_ec/view/details.html" class="btn btn-info ml-auto">Detalles</a></div>
+                        <div class="card-footer d-flex"><a href="#" onclick="modal_add_cart_idex(<?php echo $p['ID'];?>)" class="btn btn-primary">Agregar al carrito</a> <a href="http://localhost/proyect_ec/view/details.html" class="btn btn-info ml-auto">Detalles</a></div>
                       </div>
                     </div>
-                  </div>                  
+                  </div>
+                <?php
+                  }
+                ?>              
             </div>
         </div>
     </div>

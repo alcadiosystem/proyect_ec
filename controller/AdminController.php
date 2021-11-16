@@ -1,17 +1,42 @@
 <?php
 
-include "C:\\xampp\\htdocs\\proyect_ec\\connection/ConexionMySQLPHP.php";
+include "C:\\xampp\\htdocs\\proyect_ec\\controller/AuthController.php";
 
 class AdminController
 {
 
     private $con;
     private $session;
+    private $auth;
 
     public function __construct()
+    {        
+        $this->auth = new AuthController();
+        $this->con = $this->auth->getConexion();
+    }
+
+    public function getSession()
     {
-        $conexion = new ConexionMySQLPHP("localhost", "proyecto", "root", "");
-        $this->con = $conexion->getConexion();        
+        $data = $this->auth->getSession();
+        if($data){
+            if($data['rol'] != 1){
+                echo "<script language=\"javascript\">
+                    window.location.href=\"../../view/login/index.php\";
+                    </script>";
+            }else{
+                return $data;
+            }
+        }else{
+            echo "<script language=\"javascript\">
+                window.location.href=\"../../view/login/index.php\";
+                </script>";
+        }
+    }
+
+    public function logout()
+    {
+        $this->auth->getLogout();
+        $this->getSession();
     }
 
     //------------------------------------------------------------------------
@@ -19,7 +44,15 @@ class AdminController
     //------------------------------------------------------------------------
     public function getTableEmpleado()
     {
-        $query = "SELECT empleado.id AS ID, empleado.documento AS DOC, empleado.nombre AS NOM, empleado.apellido AS APE, empleado.direccion AS DIR, empleado.telefono AS TEL, empleado.rol AS ROL, empleado.usuario AS US FROM empleado";
+        $query = "SELECT empleado.id AS ID, empleado.documento AS COD, empleado.nombre AS NOM, empleado.apellido AS APE, empleado.direccion AS DIR, empleado.telefono AS TEL, empleado.rol AS ROL, empleado.usuario AS US FROM empleado";
+        $stmt = $this->con->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public function getListEmpleado()
+    {
+        $query = "SELECT empleado.id AS ID, empleado.nombre AS NOM, empleado.apellido AS APE FROM empleado";
         $stmt = $this->con->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -27,7 +60,10 @@ class AdminController
 
     public function getTableCliente()
     {
-        # code...
+        $query = "SELECT cliente.id AS ID, cliente.nombre AS NOM,  cliente.apellido AS APE, cliente.documento AS DOC, empleado.nombre AS NOMV, empleado.apellido AS APEV FROM cliente INNER JOIN	empleado	ON cliente.vendedor = empleado.id";
+        $stmt = $this->con->prepare($query);
+        $stmt->execute();
+        return $stmt;
     }
 
     public function getTableProducto()
@@ -63,6 +99,24 @@ class AdminController
         $stmt->execute();
         $data = array('response' => true, 'Men'=>$stmt->fetch());
         return json_encode($data);
+    }
+
+    public function getTableEmpleadoById($datos)
+    {
+        $query = "SELECT empleado.id AS ID, empleado.documento AS COD, empleado.nombre AS NOM, empleado.apellido AS APE, empleado.direccion AS DIR, empleado.telefono AS TEL, empleado.rol AS ROL, empleado.usuario AS US, empleado.contrasena AS PASS FROM empleado WHERE empleado.id=?";
+        $stmt = $this->con->prepare($query);        
+        $stmt->bindParam(1,$datos->id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function getTableClienteById($id)
+    {        
+        $query = "SELECT cliente.id AS ID, cliente.nombre AS NOM,  cliente.apellido AS APE, cliente.documento AS DOC, empleado.nombre AS NOMV, empleado.apellido AS APEV, empleado.id AS IDV FROM cliente INNER JOIN	empleado	ON cliente.vendedor = empleado.id WHERE cliente.id=?";
+        $stmt = $this->con->prepare($query);        
+        $stmt->bindParam(1,$id);
+        $stmt->execute();
+        return $stmt->fetch();
     }
 
     //------------------------------------------------------------------------
@@ -144,7 +198,7 @@ class AdminController
             $stmt->bindParam(3,$datos->apellido);
             $stmt->bindParam(4,$datos->direccion);
             $stmt->bindParam(5,$datos->telefono);
-            $stmt->bindParam(5,$datos->rol);
+            $stmt->bindParam(6,$datos->rol);
             $stmt->bindParam(7,$datos->usuario);
             $stmt->bindParam(8,$datos->pass);
             $stmt->bindParam(9,$datos->id);            
@@ -156,9 +210,42 @@ class AdminController
             $stmt->bindParam(3,$datos->apellido);
             $stmt->bindParam(4,$datos->direccion);
             $stmt->bindParam(5,$datos->telefono);
-            $stmt->bindParam(5,$datos->rol);
+            $stmt->bindParam(6,$datos->rol);
             $stmt->bindParam(7,$datos->usuario);
             $stmt->bindParam(8,$datos->pass);
+        }
+
+        if ($stmt ->execute()) {
+    
+            $data = array('response' => true, 'Men'=>'Datos registrados correctamente');
+            return json_encode($data);
+    
+        } else {
+    
+            $error = $stmt->errorInfo();
+            $data = array('response' => false, 'Men'=>'Se presento un error ==> '.$error);
+            return json_encode($data);   
+        }
+    }
+
+    public function setCliente($datos)
+    {
+        $d = 2;
+        if($datos->id > 0){
+            $sql = "UPDATE `proyecto`.`cliente` SET `nombre` = ?, `apellido` = ?, `documento` = ?, `vendedor` = ? WHERE `id` = ?";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(1,$datos->nombre);
+            $stmt->bindParam(2,$datos->apellido);
+            $stmt->bindParam(3,$datos->documento);
+            $stmt->bindParam(4,$datos->vendedor);
+            $stmt->bindParam(5,$datos->id);
+        }else{
+            $sql = "INSERT INTO `proyecto`.`cliente` ( `nombre`, `apellido`, `documento`, `vendedor`) VALUES (?,?,?,?)";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(1,$datos->nombre);
+            $stmt->bindParam(2,$datos->apellido);
+            $stmt->bindParam(3,$datos->documento);
+            $stmt->bindParam(4,$d);
         }
 
         if ($stmt ->execute()) {
@@ -198,6 +285,38 @@ class AdminController
     public function deleteProducto($id)
     {
         $sql="DELETE FROM producto WHERE id=?";
+        $stmt = $this->con->prepare($sql);
+        $stmt -> bindParam(1,$id );
+        if ($stmt ->execute()) {
+            $data = array('response' => true, 'Men'=>'Datos eliminados correctamente');
+            return json_encode($data);    
+        } else {
+    
+            $error = $stmt->errorInfo();
+            $data = array('response' => false, 'Men'=>'Se presento un error ==> '.$error);
+            return json_encode($data);   
+        }
+    }
+
+    public function deleteEmpleado($id)
+    {
+        $sql="DELETE FROM empleado WHERE id=?";
+        $stmt = $this->con->prepare($sql);
+        $stmt -> bindParam(1,$id );
+        if ($stmt ->execute()) {
+            $data = array('response' => true, 'Men'=>'Datos eliminados correctamente');
+            return json_encode($data);    
+        } else {
+    
+            $error = $stmt->errorInfo();
+            $data = array('response' => false, 'Men'=>'Se presento un error ==> '.$error);
+            return json_encode($data);   
+        }
+    }
+
+    public function deleteClient($id)
+    {
+        $sql="DELETE FROM cliente WHERE id=?";
         $stmt = $this->con->prepare($sql);
         $stmt -> bindParam(1,$id );
         if ($stmt ->execute()) {

@@ -1,6 +1,8 @@
 <?php
 include '../../controller/AdminController.php';
+
 $controller = new AdminController();
+$session = $controller->getSession();
 $categoria = $controller->getTableCategoria()->fetchAll();
 $product = $controller->getTableProducto()->fetchAll();
 ?>
@@ -22,7 +24,7 @@ $product = $controller->getTableProducto()->fetchAll();
     
     <!--BANNER-->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">        
-        <a class="navbar-brand" href="#">Mi Tienda</a>
+        <a class="navbar-brand" href="../index.php">Mi Tienda</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,13 +32,13 @@ $product = $controller->getTableProducto()->fetchAll();
             <div class="container">                
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home </a>
+                        <a class="nav-link" href="index.php">Home </a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="empleado.php">Empleados</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cliente</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Empleados</a>
+                        <a class="nav-link" href="cliente.php">Cliente</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Configuracion</a>
@@ -46,10 +48,13 @@ $product = $controller->getTableProducto()->fetchAll();
             <div class="mt-2 mt-md-0">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Usuario</a>
+                        <a class="nav-link" href="#"><?php echo $session['NOM'];?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Salir</a>
+                        <form id="frm_logout" name="frm_logout" action="../../service/serviceAuth.php"  method="post">
+                        <input type="hidden" name="txtOp" value="1">
+                        <a class="nav-link" onclick="logout()" href="#">Salir</a>
+                        </form>
                     </li>                    
                 </ul> 
             </div>

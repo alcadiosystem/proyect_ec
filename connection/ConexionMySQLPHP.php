@@ -5,6 +5,7 @@
 		private $baseDatos;
 		private $usuario;
 		private $password;
+		private $conexion;
 
 
         public function __construct($host, $baseDatos,$usuario,$password) {
@@ -22,7 +23,7 @@
 
         	try {
         	
-        		$conexion = new PDO("mysql:host=".$this->host.
+        		$this->conexion = new PDO("mysql:host=".$this->host.
                                 ";dbname=".$this->baseDatos,
                                 $this->usuario,
                                 $this->password
@@ -35,10 +36,15 @@
 
             }
 
-        	return $conexion;
+        	return $this->conexion;
 
 
         }
+
+		public function isConect()
+		{
+			return $this->conexion;
+		}
 
 
 	}
