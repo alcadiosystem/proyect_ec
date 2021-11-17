@@ -30,6 +30,31 @@ $(document).ready(()=>{
                 console.log(d);
                 if(!d.response){                    
                     alert(d.Men)
+                    window.setTimeout("location.reload()", 2000);
+                }else{
+                alert(d.Men)
+                }
+            },
+            error: function(err){
+                console.log(JSON.stringify(err, null, 2));
+                alert("ERROR " + JSON.stringify(err, null, 2))
+            }
+        });
+    })
+
+    $('#frm_fin_v').submit((e)=>{
+        e.preventDefault();
+        
+        console.log($('#frm_fin_v').serialize());
+        $.ajax({
+            url: $('#frm_fin_v').attr('action'),
+            type: $('#frm_fin_v').attr('method'),
+            data:  $('#frm_fin_v').serialize(),
+            dataType: "json",
+            success: function(d){              
+                console.log(d);
+                if(!d.response){                    
+                    alert(d.Men)
                     //window.setTimeout("location.reload()", 2000);
                 }else{
                 alert(d.Men)
@@ -42,8 +67,6 @@ $(document).ready(()=>{
         });
     })
 })
-
-
 
 function modal_add_cart_idex(id) {
     $('#_id').val(id)
@@ -68,7 +91,49 @@ function modal_add_cart_idex(id) {
            }
         },
         error: function(err){
+            console.log(JSON.stringify(err, null, 2));
            alert("ERROR " + JSON.stringify(err, null, 2))
         }
      });    
+}
+
+function modal_delete_cart(id) {
+    
+}
+
+function modal_fin_vent(id) {
+    $('#_id_').val(id);
+    $('#_dato').val(4);
+           
+    console.log($('#frm_fin_v').serialize());
+    $.ajax({
+        url: $('#frm_fin_v').attr('action'),
+        type: $('#frm_fin_v').attr('method'),
+        data:  $('#frm_fin_v').serialize(),
+        dataType: "json",
+        success: function(d){              
+            console.log(d);
+            if(!d.response){                    
+                console.log(d.Men);
+                $('#_dato').val(5);
+                $('#isClient').empty();
+                $('#isClient').append(
+                    '<option value="0">- Seleccione una opción -</option>'
+                  );
+          
+                 $.each(d.Men, function (i,item) {
+                    $("#isClient").append(
+                       "<option value=" + item.ID_C + ">" + item.NOM+' - '+item.NOM + "</option>"
+                     );
+                 })
+            }else{
+            alert(d.Men)
+            }
+        },
+        error: function(err){
+            console.log(JSON.stringify(err, null, 2));
+            alert("ERROR " + JSON.stringify(err, null, 2))
+        }
+    });
+    $('#modal_v').modal('show');
 }

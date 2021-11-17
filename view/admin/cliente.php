@@ -50,6 +50,7 @@ $cliente = $controller->getTableCliente()->fetchAll();
                     </li>
                     <li class="nav-item">
                         <form id="frm_logout" name="frm_logout" action="../../service/serviceAuth.php"  method="post">
+                        <input type="hidden" name="txtOp" value="1">
                         <a class="nav-link" onclick="logout()" href="#">Salir</a>
                         </form>
                     </li> 

@@ -230,7 +230,6 @@ class AdminController
 
     public function setCliente($datos)
     {
-        $d = 2;
         if($datos->id > 0){
             $sql = "UPDATE `proyecto`.`cliente` SET `nombre` = ?, `apellido` = ?, `documento` = ?, `vendedor` = ? WHERE `id` = ?";
             $stmt = $this->con->prepare($sql);
@@ -245,7 +244,7 @@ class AdminController
             $stmt->bindParam(1,$datos->nombre);
             $stmt->bindParam(2,$datos->apellido);
             $stmt->bindParam(3,$datos->documento);
-            $stmt->bindParam(4,$d);
+            $stmt->bindParam(4,$datos->vendedor);
         }
 
         if ($stmt ->execute()) {

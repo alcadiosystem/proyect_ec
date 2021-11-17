@@ -34,7 +34,7 @@ $listC = $controller->getListCategoria();
             <div class="mt-2 mt-md-0">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Carrito</a>
+                        <a class="nav-link" href="./cart.php">Carrito</a>
                     </li>
                     <li class="nav-item">
                         <?php 

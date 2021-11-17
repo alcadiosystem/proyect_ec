@@ -46,7 +46,7 @@ $listC = $controller->getListCategoria();
             <div class="mt-2 mt-md-0">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Carrito</a>
+                      <a class="nav-link" href="./cart.php">Carrito</a>
                     </li>
                     <li class="nav-item">
                         <?php 
@@ -107,7 +107,7 @@ $listC = $controller->getListCategoria();
                           <h5 class="card-title"><?php echo $p['NOM'];?></h5>
                           <p class="card-text"><?php echo $p['DES'];?></p>
                         </div>
-                        <div class="card-footer d-flex"><a href="#" onclick="modal_add_cart_idex(<?php echo $p['ID'];?>)" class="btn btn-primary">Agregar al carrito</a> <a href="http://localhost/proyect_ec/view/details.html" class="btn btn-info ml-auto">Detalles</a></div>
+                        <div class="card-footer d-flex"><a href="#" onclick="modal_add_cart_idex('<?php echo $p['ID'];?>')" class="btn btn-primary">Agregar al carrito</a> <a href="http://localhost/proyect_ec/view/details.html" class="btn btn-info ml-auto">Detalles</a></div>
                       </div>
                     </div>
                   </div>
@@ -130,34 +130,71 @@ $listC = $controller->getListCategoria();
             </button>
           </div>
           <div class="modal-body">
-            
+          <form action="../service/serviceVentas.php" id="frm_add_cart" name="frm_add_cart" method="post">
+                <input type="hidden" id="_id" name="_id_" value="-1">
+                <input type="hidden" id="dato" name="dato" value="2">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="txtCod">Codigo</label>
+                        <input type="text" disabled class="form-control" id="txtCod">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtNom">Nombre</label>
+                        <input type="text" class="form-control" id="txtNom" name="txtNom"  readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="txtStock">Stock</label>
+                        <input type="text" disabled class="form-control" id="txtStock">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtCad">Cantidad a vender</label>
+                        <input type="number" class="form-control" id="txtCad" name="txtCad">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="txtPV">Precio de venta</label>
+                        <input type="text" disabled class="form-control" name="txtPV" id="txtPV">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtTotal">Total a pagar</label>
+                        <input type="text" class="form-control" name="txtTotal" id="txtTotal" readonly="readonly">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Agregar</button>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
-    </div>
+    </div>    
 
-    <div class="modal fade" id="modal_p">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Vender producto</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
+    <div class="modal fade" id="modal_del">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="id_reg_c">Eliminar registros</h5>                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="../../service/serviceCategoria.php" name="delete_cat" id="delete_cat" method="post">
+                    <input type="hidden" name="txtIDCC" id="txtIDCC" value="-1">                    
+                    <input type="hidden" name="txtC" id="txtC" value="4">                    
+                    <h3>Se eliminarán todos los datos asociados a este registro.</h3>
+                    <h2>¿Desea continuar?</h2>
+                    <button type="submit"class="btn btn-danger">Si</button>                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                
+            </div>
+            </div>
         </div>
-      </div>
     </div>
 
       <script src="../assets/js/jquery-3.6.0.min.js"></script>

@@ -8,7 +8,9 @@ if($rol){
             window.location.href=\"../admin/index.php\";
             </script>";
     }else if($rol['rol'] == 2){
-        echo "2";
+        echo "<script language=\"javascript\">
+            window.location.href=\"../vendedor/index.php\";
+            </script>";
     }
 }
 ?>

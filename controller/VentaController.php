@@ -26,7 +26,7 @@ class VentaController
 
     public function getProductForCart($id)
     {
-        $query = "SELECT	producto.id AS ID, 	producto.codigo AS COD, 	producto.nombre AS NOM, 	producto.precio_v AS PV, 	producto.stock AS ST FROM	producto WHERE producto.id = ?";
+        $query = "SELECT producto.id AS ID, producto.codigo AS COD, 	producto.nombre AS NOM, 	producto.precio_v AS PV, 	producto.stock AS ST FROM	producto WHERE producto.id = ?";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(1,$id);
         $stmt->execute();
@@ -57,7 +57,7 @@ class VentaController
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(1,$id);
         $stmt->execute();
-        return $id;
+        return $stmt;
     }
 
     public function getListCategoria()
@@ -71,5 +71,67 @@ class VentaController
     public function setProductToCart($data)
     {
         return $this->auth->setProductCart($data);
+    }
+
+    public function removeCartProduct($id)
+    {
+        return $this->auth->removeCartProduct($id);
+    }
+
+    public function getClienteByVendedor($id)
+    {
+        $query = "SELECT cliente.id AS ID_C, cliente.nombre AS NOM, cliente.apellido AS APE	FROM cliente INNER JOIN	empleado ON	cliente.vendedor = empleado.id WHERE empleado.id =?";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(1,$id);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function setFinVenta($id_ve,$id_ca,$id_us)
+    {
+            $sql = "INSERT INTO `proyecto`.`venta` ( `id_cart_p`, `id_client`, `id_ven`) VALUES (?,?,?)";
+            $stmt = $this->con->prepare($sql);            
+            $stmt->bindParam(1,$id_ca);
+            $stmt->bindParam(2,$id_us);
+            $stmt->bindParam(3,$id_ve);
+
+            $result = $stmt->execute();
+            $state;
+
+            if($result){
+                $cartP = $this->getListProductByIDCat($id_ca)->fetchAll();
+                foreach($cartP as $d){
+                    $st = $d['STO'];
+                    $product = $this->getProductoByID($d['ID']);
+
+                    $descount = $product['STO'] - $st;
+
+                    $this->dicrementProduct($d['ID'],$descount);
+                }
+                $this->auth->deleteSessionData();
+                $data = array('error' => false, 'Men'=>'Venta realizada');
+                return json_encode($data);
+            }else{
+                $data = array('error' => true, 'Men'=>'No se pudo realizar la venta');
+                return json_encode($data);
+            }
+    }
+
+    public function dicrementProduct($id,$stock)
+    {
+        $sql = "UPDATE `producto` SET `stock`=? WHERE id=?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(1,$stock);
+        $stmt->bindParam(9,$id);
+        return $stmt->execute();
+    }
+
+    public function getProductoByID($id)
+    {
+        $query = "SELECT `id` AS ID, `stock` AS STO FROM `producto` WHERE id=?";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(1,$id);
+        $stmt->execute();
+        return $stmt->fetch();        
     }
 }

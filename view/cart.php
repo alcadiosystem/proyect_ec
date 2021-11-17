@@ -3,6 +3,12 @@ include '../controller/VentaController.php';
 $controller = new VentaController();
 $session = $controller->getSession();
 $cartProduct = $controller->getCartProduct();
+$id = $session['id'];
+$total=0;
+$idCart;
+if(isset($_SESSION['idCartP'])){
+    $idCart =$_SESSION['idCartP'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +25,7 @@ $cartProduct = $controller->getCartProduct();
 <body>
     <!--BANNER-->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">        
-        <a class="navbar-brand" href="#">Mi Tienda</a>
+        <a class="navbar-brand" href="./index.php">Mi Tienda</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -27,14 +33,14 @@ $cartProduct = $controller->getCartProduct();
             <div class="container">                
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home </a>
+                        <a class="nav-link" href="./index.php">Home </a>
                     </li>                    
                 </ul> 
             </div>
             <div class="mt-2 mt-md-0">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Carrito</a>
+                        <a class="nav-link" href="./cart.php">Carrito</a>
                     </li>
                     <li class="nav-item">
                         <?php 
@@ -88,6 +94,7 @@ $cartProduct = $controller->getCartProduct();
                         <tbody>
                             <?php
                                 foreach($cartProduct as $e){
+                                    $total = $total+$e['TOTAL'];
                                     echo '<tr>';
                                         echo '<td>' .$e['NOM'].'</td>';
                                         echo '<td>' .$e['ST'].'</td>';
@@ -104,14 +111,21 @@ $cartProduct = $controller->getCartProduct();
                             ?>
                         </tbody>
                     </table>
+                    <h2>Total a pagar: <?php echo $total;?></h2>
                 <?php
                     }
                 ?>
-            </div> 
-            <div class="card-footer">
-                <a href="#" id="btn_fin_vt" class="btn btn-success">Finalizar Venta</a>
-                <a href="#" class="btn btn-warning">Eliminar el carrito</a>
-            </div>           
+            </div>
+            <?php
+                    if($cartProduct && $session['rol'] == 2){
+            ?>
+                <div class="card-footer">
+                    <a href="#" onclick="modal_fin_vent('<?php echo $id;?>')" id="btn_fin_vt" class="btn btn-success">Finalizar Venta</a>
+                    <a href="#" class="btn btn-warning">Eliminar el carrito</a>
+                </div>           
+            <?php
+                    }
+                ?>
         </div>         
     </div>
     
@@ -184,6 +198,36 @@ $cartProduct = $controller->getCartProduct();
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="modal_v">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Finalizar venta</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form action="../service/serviceVentas.php" id="frm_fin_v" name="frm_fin_v" method="post">
+                    <input type="hidden" id="_id_" name="_id_" value="<?php echo $id; ?>">
+                    <input type="hidden" id="_dato" name="dato" value="4">
+                    <input type="hidden" id="id_c" name="id_c" value="<?php echo $idCart; ?>">
+                    <div class="form-group">
+                        <label for="isClient">Seleccionar cliente liente</label>
+                        <select class="form-control" name="isClient" id="isClient">
+                        </select>
+                    </div> 
+                    <button type="submit" class="btn btn-primary">Finalizar</button>
+              </from>
+            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>

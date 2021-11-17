@@ -77,13 +77,8 @@ class AuthController
             $op = 2;
             $id = $_SESSION['idCartP'];
         }
-        
-        
 
         $result = $this->setRegisterProduct($data,$id);
-
-        $data = array('response' => false, 'Men'=>$op.'-'.$id);
-        return json_encode($data);
 
         if($result){
             $data = array('response' => false, 'Men'=>'Producto agregado al carrto de compras');
@@ -127,6 +122,12 @@ class AuthController
         return $stmt->fetchAll();
     }
 
+    public function deleteSessionData()
+    {
+        unset($_SESSION['cartProduct']);
+        unset($_SESSION['idCartP']);
+    }
+
     public function isCartProduct()
     {
         if(isset($_SESSION['cartProduct'])){
@@ -136,29 +137,20 @@ class AuthController
         }
     }
 
-    public function removeProductCart($data)
+    public function removeProductCart($id)
     {
-        $cartProduct = $_SESSION['cartProduct'];
-        if($cartProduct == null){
-            $data = array('error' => true, 'Men'=> 'No existe el carrito para poder eliminar');
-            echo json_encode($data);
-        }else{
-            $size = var_dump(count($cartProduct));
-            $cartProduct = array_diff($cartProduct, array($data));
-            $size2 = var_dump(count($cartProduct));
-            if($size2 >= $size){
-                $data = array('error' => true, 'Men'=> 'No se pudo eliminar el producto');
-                echo json_encode($data);
-            }else{
-                $data = array('error' => false, 'Men'=> 'Producto eliminado del carrito');
-                echo json_encode($data);
-            }
-        }
+        $sql="DELETE FROM cartproduct WHERE cartproduct.id_pr =?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(1,$id);
+        return $stmt ->execute();
     }
 
-    public function removeCartProduct(Type $var = null)
+    public function removeCartProduct($id)
     {
-        # code...
+        $sql="DELETE FROM cartproduct WHERE cartproduct.id_cart =?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(1,$id);
+        return $stmt ->execute();
     }
 
     public function updateSessionUser($data)
