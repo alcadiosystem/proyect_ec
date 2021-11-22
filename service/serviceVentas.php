@@ -65,6 +65,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         case '5':
             $result = $controller->setFinVenta($id,$txtidCartP,$isClient);
             break;
+        case '6':
+            $data = array('response' => false, 'Men'=> $controller->getCartProductByID($id));
+            $result = json_encode($data);
+            break;
+        case '7':
+            $result = $controller->deleteProdutOfCartProduct($id,$txtidCartP);
+            break;
         default:
             # code...
             break;

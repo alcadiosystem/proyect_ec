@@ -3,6 +3,8 @@ include '../../controller/VendedorController.php';
 $controller = new VendedorController();
 $session = $controller->getSession();
 $listV = $controller->getAllVentas($session['id']);
+$listInfo = $controller->getInfoVendedor($session['id']);
+setlocale(LC_MONETARY, 'es-US');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,44 +56,78 @@ $listV = $controller->getAllVentas($session['id']);
     </nav>
 
     <!--Container-->
-    <div class="container">
-        <div class="card">
-            <div class="card-header d-flex">
-                <h5>Listado de ventas realizadas </h5>                
-            </div>       
-            <div class="card-body">
-                <table id="tabled" class="table table-default display">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Cliente</th>
-                            <th>Cantidad vendida</th>
-                            <th>Total Pagado</th>
-                            <th>Ver detalles</th>                                           
-                        </tr>
-                    </thead>
-                    <tbody>
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header d-flex">
+                    <h5>Listado de ventas realizadas </h5>                
+                </div>       
+                <div class="card-body">
+                    <table id="tabled" class="table table-default display">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Cantidad vendida</th>
+                                <th>Total Pagado</th>
+                                <th>Ver detalles</th>                                           
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                        <?php
-                            foreach($listV as $p){
-                                echo '<tr>';
-                                    echo '<td>' .$p['FECH'].'</td>';
-                                    echo '<td>' .$p['NOMC'].'-'.$p['NOMC'].'</td>';
-                                    echo '<td>' .$p['COUNT_P'].'</td>';
-                                    echo '<td>' .$p['SUN_a'].'</td>';
-                        ?>                                    
-                                    <td>
-                                        <a href="#" onclick="btn_prod_up('<?php echo $p['ID_CART'];?>')" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                                    </td>
-                        <?php
-                                echo '</tr>';
-                            }
-                        ?>                                    
-                    </tbody>
-                </table>
-            </div>            
+                            <?php
+                                foreach($listV as $p){
+                                    echo '<tr>';
+                                        echo '<td>' .$p['FECH'].'</td>';
+                                        echo '<td>' .$p['NOMC'].'-'.$p['NOMC'].'</td>';
+                                        echo '<td>' .$p['COUNT_P'].'</td>';
+                                        echo '<td> $' .number_format($p['SUN_a']).'</td>';
+                            ?>                                    
+                                        <td>
+                                            <a href="#" onclick="details('<?php echo $p['IDV'];?>')" class="btn btn-warning"><i class="far fa-edit"></i></a>
+                                        </td>
+                            <?php
+                                    echo '</tr>';
+                                }
+                            ?>                                    
+                        </tbody>
+                    </table>
+                </div>            
+            </div>
         </div>
-    </div>   
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header d-flex">
+                    <h5>Listado de ganancias por ventas </h5>                
+                </div>       
+                <div class="card-body">
+                    <table id="tabled" class="table table-default display">
+                        <thead>
+                            <tr>
+                                <th>Venta</th>
+                                <th>Total</th>
+                                <th>Ganancias</th>
+                                <th>Porcentaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <?php
+                                foreach($listInfo as $p){
+                                    echo '<tr>';
+                                        echo '<td>' .$p['FECH'].'</td>';
+                                        echo '<td> $' .number_format($p['TOTAL']).'</td>';
+                                        echo '<td> $' .number_format($p['GAN']).'</td>';
+                                        echo '<td> ' .$p['PRG'].'% </td>';
+                                    echo '</tr>';
+                                }
+                            ?>                                    
+                        </tbody>
+                    </table>
+                </div>            
+            </div>
+        </div>
+    </div> 
 
     <!--MODAL PRODUCTO-->
     <div class="modal fade" id="modal_p">
@@ -104,39 +140,23 @@ $listV = $controller->getAllVentas($session['id']);
                 </button>
             </div>
             <div class="modal-body">
-            <table id="tabled" class="table table-default display">
+                <table id="tabled" class="table table-default display">
                     <thead>
                         <tr>
                             <th>Codigo Producto</th>
                             <th>Nombre</th>
                             <th>Cantidad</th>
-                            <th>Total</th>
                             <th>Precio venta</th>
+                            <th>Total</th>
                             <th>Categoria</th>
                         </tr>
                     </thead>
-                    <tbody>
-
-                        <?php
-                            foreach($listV as $p){
-                                echo '<tr>';
-                                    echo '<td>' .$p['FECH'].'</td>';
-                                    echo '<td>' .$p['NOMC'].'-'.$p['NOMC'].'</td>';
-                                    echo '<td>' .$p['COUNT_P'].'</td>';
-                                    echo '<td>' .$p['SUN_a'].'</td>';
-                        ?>                                    
-                                    <td>
-                                        <a href="#" onclick="btn_prod_up('<?php echo $p['ID_CART'];?>')" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                                    </td>
-                        <?php
-                                echo '</tr>';
-                            }
-                        ?>                                    
+                    <tbody id="tbl_vent_">                                 
                     </tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                
+                <h2>Total facturado: <span id="tt"></span> </h2>
             </div>
             </div>
         </div>

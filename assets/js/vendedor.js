@@ -55,11 +55,11 @@ $(document).ready(()=>{
             data:  $('#reg_cliente').serialize(),
             dataType: "json",
             success: function(d){              
-                if(d.response){                 
-                alert(d.Men)
-                window.setTimeout("location.reload()", 2000);
+                if(!d.response){                 
+                    alert(d.Men)
+                    window.setTimeout("location.reload()", 2000);
                 }else{
-                alert(d.Men)
+                    alert(d.Men)
                 }
             },
             error: function(err){
@@ -117,6 +117,8 @@ function btn_cli_up(id) {
              $('#txtDoc').val(d.Men.DOC);
              $('#txtNom').val(d.Men.NOM);
              $('#txtAPE').val(d.Men.APE);
+
+             $('#txtTel_').val(d.Men.TEL);
  
              $('#modal_p').modal('show');
           }else{
@@ -171,4 +173,53 @@ function logout() {
           alert("ERROR " + JSON.stringify(err, null, 2))
        }
     });
+ }
+
+ function details(id) {
+     $('#tbl_vent_').empty();
+    $.ajax({
+        url: '../../service/serviceVendedor.php',
+        type: 'post',
+        data:  {dato: 1, id: id},
+        dataType: "json",
+        success: function(d){         
+           if(d.response){
+               console.log(d);
+               $('#tbl_vent_').empty();
+               var val = 0;
+               $.each(d.Men, function (i,item) {
+                                    
+                    $("#tbl_vent_").append("<tr>");
+
+                    $("#tbl_vent_").append("<td>" + item.COD + "</td>");
+                    $("#tbl_vent_").append("<td>" + item.NOM + "</td>");
+                    $("#tbl_vent_").append("<td>" + item.CANT + "</td>");
+                    $("#tbl_vent_").append("<td>" + convertDivisas(item.P_V) + "</td>");
+                    $("#tbl_vent_").append("<td>" + convertDivisas(item.TOTAL) + "</td>");
+                    $("#tbl_vent_").append("<td>" + item.CAT + "</td>");
+
+                    $("#tbl_vent_").append("</tr>");
+
+                    let number = Number(item.TOTAL)
+                    val = val + number;
+                })
+
+                console.log('VAL ==> ' + val);
+                
+                $('#tt').text(convertDivisas(val))
+                
+               $('#modal_p').modal('show');
+           }else{
+              alert(d.Men)
+           }
+        },
+        error: function(err){
+           alert("ERROR " + JSON.stringify(err, null, 2))
+        }
+     });
+ }
+
+
+ function convertDivisas(params) {
+     return Intl.NumberFormat("en-US",{style: "currency", currency:"USD"}).format(params);
  }

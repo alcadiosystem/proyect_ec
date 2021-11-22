@@ -6,8 +6,8 @@ include '../model/CategoriaModel.php';
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $txtCategoria="";
     $txtIDC=0;
-    $txtC;
-    $txtIDCC;
+    $txtC="";
+    $txtIDCC="";
 
     if(isset($_POST['txtCategoria'])){
         $txtCategoria = $_POST['txtCategoria'];

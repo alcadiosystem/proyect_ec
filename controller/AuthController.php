@@ -137,9 +137,9 @@ class AuthController
         }
     }
 
-    public function removeProductCart($id)
+    public function removeProductOfCartCart($id)
     {
-        $sql="DELETE FROM cartproduct WHERE cartproduct.id_pr =?";
+        $sql="DELETE FROM cartproduct WHERE cartproduct.id =?";
         $stmt = $this->con->prepare($sql);
         $stmt->bindParam(1,$id);
         return $stmt ->execute();

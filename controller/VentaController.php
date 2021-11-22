@@ -128,10 +128,49 @@ class VentaController
 
     public function getProductoByID($id)
     {
-        $query = "SELECT `id` AS ID, `stock` AS STO FROM `producto` WHERE id=?";
+        $query = "SELECT producto.id AS ID,producto.imagen AS IMG, producto.codigo AS COD, producto.nombre AS NOM, producto.descripcion AS DES, producto.precio_v AS P_V, producto.stock AS STO, categoria.nombre AS CAT FROM producto INNER JOIN categoria ON producto.categoria = categoria.id WHERE	producto.id = ?";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(1,$id);
         $stmt->execute();
         return $stmt->fetch();        
+    }
+
+    public function getCartProductByID($id)
+    {
+        $query = "SELECT producto.id AS ID_P, producto.nombre AS NOM_P, producto.codigo AS COD_P,	producto.precio_v AS P_V,	producto.stock AS ST_P, cartproduct.stock AS ST_C, cartproduct.id AS ID_C, cartproduct.total AS TOTAL FROM	producto INNER JOIN cartproduct ON producto.id = cartproduct.id_pr WHERE cartproduct.id = ?";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(1,$id);
+        $stmt->execute();
+        return $stmt->fetch();  
+    }
+
+    public function deleteProdutOfCartProduct($id, $cod)
+    {
+        $query = "SELECT COUNT(cartproduct.id_cart) AS COUNT FROM cartproduct WHERE	cartproduct.id_cart = ?";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(1,$cod);
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        if($result == 1){
+            $result = $this->auth->removeCartProduct($cod);
+            if($result){
+                $this->auth->deleteSessionData();
+                $data = array('response' => false,'Men' => 'Carrito de compras vacio!!!!' );
+                return json_encode($data);
+            }else{
+                $data = array('response' => true,'Men' => 'No se pudo realizar la operacion, intente mas tarde!!' );
+                return json_encode($data);
+            }
+        }else{
+            $result = $this->auth->removeProductOfCartCart($id);
+            if($result){
+                $data = array('response' => false,'Men' => 'Producto eliminado del carrito de compras' );
+                return json_encode($data);
+            }else{
+                $data = array('response' => true,'Men' => 'No se pudo eliminar del carrito de compras, intente otra vez!!!' );
+                return json_encode($data);
+            }
+        }
     }
 }

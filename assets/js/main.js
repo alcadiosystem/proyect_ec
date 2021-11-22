@@ -55,7 +55,7 @@ $(document).ready(()=>{
                 console.log(d);
                 if(!d.response){                    
                     alert(d.Men)
-                    //window.setTimeout("location.reload()", 2000);
+                    window.setTimeout("location.reload()", 2000);
                 }else{
                 alert(d.Men)
                 }
@@ -66,6 +66,32 @@ $(document).ready(()=>{
             }
         });
     })
+
+    $('#frm_del_cart').submit((e)=>{
+        e.preventDefault();
+        
+        console.log($('#frm_del_cart').serialize());
+        $.ajax({
+            url: $('#frm_del_cart').attr('action'),
+            type: $('#frm_del_cart').attr('method'),
+            data:  $('#frm_del_cart').serialize(),
+            dataType: "json",
+            success: function(d){              
+                console.log(d);
+                if(!d.response){                    
+                    alert(d.Men)
+                    window.setTimeout("location.reload()", 2000);
+                }else{
+                alert(d.Men)
+                }
+            },
+            error: function(err){
+                console.log(JSON.stringify(err, null, 2));
+                alert("ERROR " + JSON.stringify(err, null, 2))
+            }
+        });
+    })
+    
 })
 
 function modal_add_cart_idex(id) {
@@ -98,7 +124,7 @@ function modal_add_cart_idex(id) {
 }
 
 function modal_delete_cart(id) {
-    
+    alert(id)
 }
 
 function modal_fin_vent(id) {
@@ -136,4 +162,41 @@ function modal_fin_vent(id) {
         }
     });
     $('#modal_v').modal('show');
+}
+
+function modal_update_cartProc(id) {
+    $('#_id').val(id);
+    $('#_dato').val(6);
+    $.ajax({
+        url: $('#frm_up_cart').attr('action'),
+        type: $('#frm_up_cart').attr('method'),
+        data:  $('#frm_up_cart').serialize(),
+        dataType: "json",
+        success: function(d){              
+            console.log(d);
+            if(!d.response){                    
+                console.log(d.Men);
+                $('#txtCod').val(d.Men.COD_P);
+                $('#txtNom').val(d.Men.NOM_P);
+                $('#txtStock').val(d.Men.ST_P);
+                $('#txtCad').val(d.Men.ST_C);
+                $('#txtPV').val(d.Men.P_V);
+                $('#txtTotal').val(d.Men.TOTAL);
+            }else{
+            alert(d.Men)
+            }
+        },
+        error: function(err){
+            console.log(JSON.stringify(err, null, 2));
+            alert("ERROR " + JSON.stringify(err, null, 2))
+        }
+    });
+    $('#modal_c').modal('show');
+}
+
+function modal_del_cartProc(id,cod) {
+    alert('ID ==> ' + id + " cod ==> " + cod)
+    $('#_id_').val(id);
+    $('#_dato').val(7);
+    $('#modal_p').modal('show');
 }

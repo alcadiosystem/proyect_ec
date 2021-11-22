@@ -3,9 +3,12 @@ include '../controller/VentaController.php';
 $controller = new VentaController();
 $session = $controller->getSession();
 $cartProduct = $controller->getCartProduct();
-$id = $session['id'];
+$id;
+if(isset($session['id'])){
+  $id = $session['id'];
+}
 $total=0;
-$idCart;
+$idCart="";
 if(isset($_SESSION['idCartP'])){
     $idCart =$_SESSION['idCartP'];
 }
@@ -40,13 +43,19 @@ if(isset($_SESSION['idCartP'])){
             <div class="mt-2 mt-md-0">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="./cart.php">Carrito</a>
-                    </li>
-                    <li class="nav-item">
-                        <?php 
-                        if($session){                        
+                    <?php 
+                        if($session){
+                          $url ="#";
+                          $rol = $session['rol'];
+                          if($rol == 1){
+                            $url = "./admin/index.php";
+                          }else if($rol == 2){
+                            $url = "./vendedor/index.php";
+                          }else{
+                            $url = "./login/index.php";
+                          }
                         ?>
-                          <a class="nav-link" href="#"><?php echo $session['NOM'];?></a>
+                          <a class="nav-link" href="<?php echo $url;?>"><?php echo $session['NOM'];?></a>
                         <?php
                         }else{
                         ?>
@@ -101,9 +110,9 @@ if(isset($_SESSION['idCartP'])){
                                         echo '<td>' .$e['TOTAL'].'</td>';
                             ?>   
                                         <td>
-                                        <a href="#" onclick="showModalCategoria('<?php echo $e['ID'] ?>','2')" class="btn btn-warning"><i class="far fa-edit"></i></a>
+                                        <a href="#" onclick="modal_update_cartProc('<?php echo $e['ID'] ?>','2')" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                         -
-                                        <a href="#" onclick="showModalDeleteCategoria('<?php echo $e['ID'] ?>')" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                                        <a href="#" onclick="modal_del_cartProc('<?php echo $e['ID']; ?>','<?php echo $idCart;?>')" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
                                         </td>   
                             <?php              
                                     echo '<tr>';
@@ -116,17 +125,28 @@ if(isset($_SESSION['idCartP'])){
                     }
                 ?>
             </div>
-            <?php
-                    if($cartProduct && $session['rol'] == 2){
-            ?>
-                <div class="card-footer">
+            <div class="card-footer">
+                  <?php
+                          $estado = isset($session['rol']);
+
+
+                          if($cartProduct && $estado){
+                            if($session['rol'] == 2){
+                  ?>                
                     <a href="#" onclick="modal_fin_vent('<?php echo $id;?>')" id="btn_fin_vt" class="btn btn-success">Finalizar Venta</a>
-                    <a href="#" class="btn btn-warning">Eliminar el carrito</a>
-                </div>           
-            <?php
-                    }
-                ?>
-        </div>         
+                  <?php
+                            }
+                          }
+                  ?>
+                  <?php 
+                      if($idCart != null){
+                  ?>
+                        <a href="#" onclick="modal_delete_cart('<?php echo $idCart;?>')" class="btn btn-warning">Eliminar el carrito</a>
+                  <?php
+                      }
+                      ?>
+            </div>
+        </div>
     </div>
     
     
@@ -141,9 +161,9 @@ if(isset($_SESSION['idCartP'])){
             </button>
           </div>
           <div class="modal-body">
-            <form action="../service/serviceVentas.php" id="frm_add_cart" name="frm_add_cart" method="post">
+            <form action="../service/serviceVentas.php" id="frm_up_cart" name="frm_up_cart" method="post">
                 <input type="hidden" id="_id" name="_id_" value="-1">
-                <input type="hidden" id="dato" name="dato" value="2">
+                <input type="hidden" id="dato" name="dato" value="6">
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="txtCod">Codigo</label>
@@ -194,7 +214,14 @@ if(isset($_SESSION['idCartP'])){
             </button>
           </div>
           <div class="modal-body">
-            
+          <form action="../service/serviceVentas.php" id="frm_del_cart" name="frm_del_cart" method="post">
+                <input type="hidden" id="_id_" name="_id_" value="-1">
+                <input type="hidden" id="_idC" name="id_c" value="-1">
+                <input type="hidden" id="dato" name="dato" value="7">
+                <h3>Se eliminarán el producto de este carrito.</h3>
+                <h2>¿Desea continuar?</h2>
+                <button type="submit"class="btn btn-danger">Si</button>
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -202,37 +229,7 @@ if(isset($_SESSION['idCartP'])){
         </div>
       </div>
     </div>
-
-
-    <div class="modal fade" id="modal_v">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Finalizar venta</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-              <form action="../service/serviceVentas.php" id="frm_fin_v" name="frm_fin_v" method="post">
-                    <input type="hidden" id="_id_" name="_id_" value="<?php echo $id; ?>">
-                    <input type="hidden" id="_dato" name="dato" value="4">
-                    <input type="hidden" id="id_c" name="id_c" value="<?php echo $idCart; ?>">
-                    <div class="form-group">
-                        <label for="isClient">Seleccionar cliente liente</label>
-                        <select class="form-control" name="isClient" id="isClient">
-                        </select>
-                    </div> 
-                    <button type="submit" class="btn btn-primary">Finalizar</button>
-              </from>
-            </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    
       <script src="../assets/js/jquery-3.6.0.min.js"></script>
       <script src="../assets/js/bootstrap.min.js"></script>            
     <script src="../assets/js/main.js"></script>

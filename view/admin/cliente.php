@@ -39,7 +39,7 @@ $cliente = $controller->getTableCliente()->fetchAll();
                         <a class="nav-link" href="cliente.php">Cliente</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Configuracion</a>
+                        <a class="nav-link" href="config.php">Configuracion</a>
                     </li>
                 </ul> 
             </div>
@@ -73,7 +73,8 @@ $cliente = $controller->getTableCliente()->fetchAll();
                             <th>Documento</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>Vendedor</th>
+                            <th>Telefono</th>
+                            <th>Vendedor</th>                            
                             <th>Opciones</th>                                           
                         </tr>
                     </thead>
@@ -85,6 +86,7 @@ $cliente = $controller->getTableCliente()->fetchAll();
                                     echo '<td>' .$p['DOC'].'</td>';
                                     echo '<td>' .$p['NOM'].'</td>';
                                     echo '<td>' .$p['APE'].'</td>';
+                                    echo '<td>' .$p['TEL'].'</td>';
                                     echo '<td>' .$p['NOMV'].' - '.$p['APEV'] .'</td>';
                         ?>                                    
                                     <td>
@@ -126,13 +128,17 @@ $cliente = $controller->getTableCliente()->fetchAll();
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txtNom">Nombre</label>
-                            <input type="text" class="form-control" id="txtNom" name="txtNom">                            required 
+                            <input type="text" class="form-control" id="txtNom" name="txtNom" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="txtAPE">Apellido</label>
                             <input type="text" class="form-control" id="txtAPE" name="txtAPE" required>
                         </div>
-                    </div>                                        
+                    </div>   
+                    <div class="form-group">
+                        <label for="txtTel">Telefono</label>
+                        <input type="number" class="form-control" id="txtTel_" name="txtTel" required>
+                    </div>                                     
                     <div class="form-group">
                         <label for="slVend">Vendedor</label>
                         <select class="form-control" name="slVend" id="slVend">
@@ -157,7 +163,7 @@ $cliente = $controller->getTableCliente()->fetchAll();
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body">                
                 <form action="../../service/clienteService.php" name="delete_cli" id="delete_cli" method="post">
                     <input type="hidden" name="_id_" id="_id" value="-1">                    
                     <input type="hidden" name="dato" id="dato" value="4">                    

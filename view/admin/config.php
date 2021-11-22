@@ -1,8 +1,8 @@
 <?php
-include '../../controller/VendedorController.php';
-$controller = new VendedorController();
+include '../../controller/AdminController.php';
+$controller = new AdminController();
 $session = $controller->getSession();
-$cliente = $controller->getTableCliente($session['id'])->fetchAll();
+$porcentaje = $controller->getTablePorcentaje();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,11 +29,17 @@ $cliente = $controller->getTableCliente($session['id'])->fetchAll();
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="container">                
                 <ul class="navbar-nav mr-auto">
-                <li class="nav-item ">
+                    <li class="nav-item">
                         <a class="nav-link" href="index.php">Home </a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="empleado.php">Empleados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cliente.php">Cliente</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="cliente.php">Cliente</a>
+                        <a class="nav-link" href="#">Configuracion</a>
                     </li>
                 </ul> 
             </div>
@@ -57,43 +63,21 @@ $cliente = $controller->getTableCliente($session['id'])->fetchAll();
     <div class="container">
         <div class="card">
             <div class="card-header d-flex">
-                <h5>Listado de los empleados</h5>
-                <a id="btnAddCliente" href="#" class="btn btn-primary ml-auto">Agregar</a>                            
+                <h5>Porcentaje de ganancias del vendedor</h5>
             </div>            
             <div class="card-body">                
-                <table id="tabled" class="table table-default display">
-                    <thead>
-                        <tr>                            
-                            <th>Documento</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Telefono</th>
-                            <th>Vendedor</th>
-                            <th>Opciones</th>                                           
-                        </tr>
-                    </thead>
-                    <tbody>
+                <form action="../../service/serviceEmpleado.php" id="frm_reg_conf" name="frm_reg_conf" method="post">
+                    
+                    <input type="hidden" name="dato" id="dato" value="6">
 
-                        <?php
-                            foreach($cliente as $p){
-                                echo '<tr>';
-                                    echo '<td>' .$p['DOC'].'</td>';
-                                    echo '<td>' .$p['NOM'].'</td>';
-                                    echo '<td>' .$p['APE'].'</td>';
-                                    echo '<td>' .$p['TEL'].'</td>';
-                                    echo '<td>' .$p['NOMV'].' - '.$p['APEV'] .'</td>';
-                        ?>                                    
-                                    <td>
-                                    <a href="#" onclick="btn_cli_up('<?php echo $p['ID'];?>')" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                                    -
-                                    <a href="#" onclick="btn_cli_del('<?php echo $p['ID'];?>')" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                                    </td>
-                        <?php
-                                echo '</tr>';
-                            }
-                        ?>                                    
-                    </tbody>
-                </table>
+                    <div class="form-group">
+                        <label for="txtPor">Porcentaje</label>
+                        <input step="any" type="number" class="form-control" id="txtPor" name="txtPor" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </form>
+                <br>
+                <h4>Porcentaje actual de ganancias: <?php echo $porcentaje['POR'];?>%   </h4>
             </div>            
         </div>
     </div>  
@@ -109,7 +93,7 @@ $cliente = $controller->getTableCliente($session['id'])->fetchAll();
                 </button>
             </div>
             <div class="modal-body">
-                <form action="../../service/clienteService.php" id="reg_cliente" name="reg_cliente" method="post">
+                <form action="../../service/clienteService.php" id="reg_new_cliente" name="reg_new_cliente" method="post">
                     
                     <input type="hidden" name="dato" id="dato" value="2">
                     <input type="hidden" name="_id_" id="_id_" value="-1">
@@ -128,15 +112,10 @@ $cliente = $controller->getTableCliente($session['id'])->fetchAll();
                             <label for="txtAPE">Apellido</label>
                             <input type="text" class="form-control" id="txtAPE" name="txtAPE" required>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="txtTel">Telefono</label>
-                        <input type="number" class="form-control" id="txtTel_" name="txtTel" required>
-                    </div> 
+                    </div>                                        
                     <div class="form-group">
                         <label for="slVend">Vendedor</label>
                         <select class="form-control" name="slVend" id="slVend">
-                            <option value="<?php echo $session['id'];?>"><?php echo $session['NOM'];?></option>
                         </select>
                     </div>                    
                     <button type="submit" class="btn btn-primary">Aceptar</button>
@@ -158,7 +137,7 @@ $cliente = $controller->getTableCliente($session['id'])->fetchAll();
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body">                
                 <form action="../../service/clienteService.php" name="delete_cli" id="delete_cli" method="post">
                     <input type="hidden" name="_id_" id="_id" value="-1">                    
                     <input type="hidden" name="dato" id="dato" value="4">                    
@@ -178,6 +157,6 @@ $cliente = $controller->getTableCliente($session['id'])->fetchAll();
     <script src="../../assets/js/bootstrap.min.js"></script>
     <script src="../../assets/js/jquery.dataTables.min.js"></script>
     <script src="../../assets/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../../assets/js/vendedor.js"></script>
+    <script src="../../assets/js/admin.js"></script>
 </body>
 </html>

@@ -60,7 +60,7 @@ class AdminController
 
     public function getTableCliente()
     {
-        $query = "SELECT cliente.id AS ID, cliente.nombre AS NOM,  cliente.apellido AS APE, cliente.documento AS DOC, empleado.nombre AS NOMV, empleado.apellido AS APEV FROM cliente INNER JOIN	empleado	ON cliente.vendedor = empleado.id";
+        $query = "SELECT cliente.id AS ID, cliente.telefono AS TEL, cliente.nombre AS NOM,  cliente.apellido AS APE, cliente.documento AS DOC, empleado.nombre AS NOMV, empleado.apellido AS APEV FROM cliente INNER JOIN	empleado	ON cliente.vendedor = empleado.id";
         $stmt = $this->con->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -112,9 +112,26 @@ class AdminController
 
     public function getTableClienteById($id)
     {        
-        $query = "SELECT cliente.id AS ID, cliente.nombre AS NOM,  cliente.apellido AS APE, cliente.documento AS DOC, empleado.nombre AS NOMV, empleado.apellido AS APEV, empleado.id AS IDV FROM cliente INNER JOIN	empleado	ON cliente.vendedor = empleado.id WHERE cliente.id=?";
+        $query = "SELECT cliente.id AS ID, cliente.telefono AS TEL, cliente.nombre AS NOM,  cliente.apellido AS APE, cliente.documento AS DOC, empleado.nombre AS NOMV, empleado.apellido AS APEV, empleado.id AS IDV FROM cliente INNER JOIN	empleado	ON cliente.vendedor = empleado.id WHERE cliente.id=?";
         $stmt = $this->con->prepare($query);        
         $stmt->bindParam(1,$id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function getTableClienteByDocumento($id)
+    {        
+        $query = "SELECT cliente.id AS ID, cliente.telefono AS TEL, cliente.nombre AS NOM,  cliente.apellido AS APE, cliente.documento AS DOC, empleado.nombre AS NOMV, empleado.apellido AS APEV, empleado.id AS IDV FROM cliente INNER JOIN	empleado	ON cliente.vendedor = empleado.id WHERE cliente.documento=?";
+        $stmt = $this->con->prepare($query);        
+        $stmt->bindParam(1,$id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function getTablePorcentaje()
+    {        
+        $query = "SELECT config.id AS ID, config.porcentaje AS POR FROM config";
+        $stmt = $this->con->prepare($query);
         $stmt->execute();
         return $stmt->fetch();
     }
@@ -230,32 +247,66 @@ class AdminController
 
     public function setCliente($datos)
     {
-        if($datos->id > 0){
-            $sql = "UPDATE `proyecto`.`cliente` SET `nombre` = ?, `apellido` = ?, `documento` = ?, `vendedor` = ? WHERE `id` = ?";
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(1,$datos->nombre);
-            $stmt->bindParam(2,$datos->apellido);
-            $stmt->bindParam(3,$datos->documento);
-            $stmt->bindParam(4,$datos->vendedor);
-            $stmt->bindParam(5,$datos->id);
+        $result = $this->getTableClienteByDocumento($datos->documento);
+
+
+        if($result){
+            $data = array('response' => true, 'Men'=>'El documento ya se encuentra registrado');
+            return json_encode($data);
         }else{
-            $sql = "INSERT INTO `proyecto`.`cliente` ( `nombre`, `apellido`, `documento`, `vendedor`) VALUES (?,?,?,?)";
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(1,$datos->nombre);
-            $stmt->bindParam(2,$datos->apellido);
-            $stmt->bindParam(3,$datos->documento);
-            $stmt->bindParam(4,$datos->vendedor);
+            if($datos->id > 0){
+                $sql = "UPDATE `proyecto`.`cliente` SET `nombre` = ?, `apellido` = ?, `documento` = ?, `vendedor` = ?, `telefono`= ? WHERE `id` = ?";
+                $stmt = $this->con->prepare($sql);
+                $stmt->bindParam(1,$datos->nombre);
+                $stmt->bindParam(2,$datos->apellido);
+                $stmt->bindParam(3,$datos->documento);
+                $stmt->bindParam(4,$datos->vendedor);
+                $stmt->bindParam(5,$datos->telefono);
+                $stmt->bindParam(6,$datos->id);
+            }else{
+                $sql = "INSERT INTO `proyecto`.`cliente` ( `nombre`, `apellido`, `documento`, `vendedor`,`telefono`) VALUES (?,?,?,?,?)";
+                $stmt = $this->con->prepare($sql);
+                $stmt->bindParam(1,$datos->nombre);
+                $stmt->bindParam(2,$datos->apellido);
+                $stmt->bindParam(3,$datos->documento);
+                $stmt->bindParam(4,$datos->vendedor);
+                $stmt->bindParam(5,$datos->telefono);
+            }
+    
+            if ($stmt ->execute()) {
+        
+                $data = array('response' => false, 'Men'=>'Datos registrados correctamente');
+                return json_encode($data);
+        
+            } else {
+        
+                $error = $stmt->errorInfo();
+                $data = array('response' => true, 'Men'=>'Se presento un error ==> '.$error);
+                return json_encode($data);   
+            }
+        }
+    }
+
+    public function setPorcentaje($dato)
+    {
+        if($dato >= 101){
+            $data = array('response' => true, 'Men'=>'El porcentaje no puede superar el 100%');
+            return json_encode($data);
         }
 
+        $sql = "UPDATE `proyecto`.`config` SET `porcentaje` = ? WHERE `id` = 1";
+        $stmt = $this->con->prepare($sql);
+        $D=0.67;
+        $stmt->bindParam(1,$dato);
         if ($stmt ->execute()) {
     
-            $data = array('response' => true, 'Men'=>'Datos registrados correctamente');
+            $data = array('response' => false, 'Men'=>'Datos registrados correctamente');
             return json_encode($data);
     
         } else {
     
             $error = $stmt->errorInfo();
-            $data = array('response' => false, 'Men'=>'Se presento un error ==> '.$error);
+            $data = array('response' => true, 'Men'=>'Se presento un error ==> '.$error);
             return json_encode($data);   
         }
     }
@@ -319,12 +370,12 @@ class AdminController
         $stmt = $this->con->prepare($sql);
         $stmt -> bindParam(1,$id );
         if ($stmt ->execute()) {
-            $data = array('response' => true, 'Men'=>'Datos eliminados correctamente');
+            $data = array('response' => flase, 'Men'=>'Datos eliminados correctamente');
             return json_encode($data);    
         } else {
     
             $error = $stmt->errorInfo();
-            $data = array('response' => false, 'Men'=>'Se presento un error ==> '.$error);
+            $data = array('response' => true, 'Men'=>'Se presento un error ==> '.$error);
             return json_encode($data);   
         }
     }

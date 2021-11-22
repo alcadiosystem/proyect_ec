@@ -38,9 +38,18 @@ $listC = $controller->getListCategoria();
                     </li>
                     <li class="nav-item">
                         <?php 
-                        if($session){                        
+                        if($session){
+                          $url ="#";
+                          $rol = $session['rol'];
+                          if($rol == 1){
+                            $url = "./admin/index.php";
+                          }else if($rol == 2){
+                            $url = "./vendedor/index.php";
+                          }else{
+                            $url = "./login/index.php";
+                          }
                         ?>
-                          <a class="nav-link" href="#"><?php echo $session['NOM'];?></a>
+                          <a class="nav-link" href="<?php echo $url;?>"><?php echo $session['NOM'];?></a>
                         <?php
                         }else{
                         ?>
@@ -95,7 +104,7 @@ $listC = $controller->getListCategoria();
                           <h5 class="card-title"><?php echo $p['NOM'];?></h5>
                           <p class="card-text"><?php echo $p['DES'];?></p>
                         </div>
-                        <div class="card-footer d-flex"><a href="#" onclick="modal_add_cart_idex('<?php echo $p['ID'];?>')" class="btn btn-primary">Agregar al carrito</a> <a href="http://localhost/proyect_ec/view/details.html" class="btn btn-info ml-auto">Detalles</a></div>
+                        <div class="card-footer d-flex"><a href="#" onclick="modal_add_cart_idex('<?php echo $p['ID'];?>')" class="btn btn-primary">Agregar al carrito</a> <a href="http://localhost/proyect_ec/view/details.php?id=<?php echo$p['ID'];?>" class="btn btn-info ml-auto">Detalles</a></div>
                       </div>
                     </div>
                   </div>

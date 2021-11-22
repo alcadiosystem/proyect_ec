@@ -60,15 +60,39 @@ $(document).ready(function(){
    })
 
    //Formularios
+   $('#frm_reg_conf').submit((e)=>{
+      e.preventDefault();
+      console.log($('#frm_reg_conf').attr('action'));
+      console.log($('#frm_reg_conf').serialize());
+      $.ajax({
+         url: $('#frm_reg_conf').attr('action'),
+         type: $('#frm_reg_conf').attr('method'),
+         data:  $('#frm_reg_conf').serialize(),
+         dataType: "json",
+         success: function(d){
+            if(!d.response){                 
+               alert(d.Men)
+               window.setTimeout("location.reload()", 2000);
+            }else{
+            alert(d.Men)
+            }
+         },
+         error: function(err){
+            console.log(JSON.stringify(err, null, 2));
+            alert("ERROR ==> " + JSON.stringify(err, null, 2))
+         }
+      });
+   })
+
    $('#reg_new_cat').submit(function(e){
-   e.preventDefault();
-   console.log($('#reg_new_cat').attr('action'));
+      e.preventDefault();
+      console.log($('#reg_new_cat').attr('action'));
       $.ajax({
          url: $('#reg_new_cat').attr('action'),
          type: $('#reg_new_cat').attr('method'),
          data:  $('#reg_new_cat').serialize(),
          dataType: "json",
-         success: function(d){              
+         success: function(d){
             if(d.response){                 
                alert(d.Men)
                window.setTimeout("location.reload()", 2000);
@@ -76,8 +100,9 @@ $(document).ready(function(){
             alert(d.Men)
             }
          },
-         error: function(){
-            alert("ERROR")
+         error: function(err){
+            console.log(JSON.stringify(err, null, 2));
+            alert("ERROR ==> " + JSON.stringify(err, null, 2))
          }
       });
    }); 
@@ -203,18 +228,18 @@ $(document).ready(function(){
 
    $('#reg_new_cliente').submit(function(e){
    e.preventDefault();
-   console.log($('#reg_new_cliente').serialize());
       $.ajax({
          url: $('#reg_new_cliente').attr('action'),
          type: $('#reg_new_cliente').attr('method'),
          data:  $('#reg_new_cliente').serialize(),
          dataType: "json",
-         success: function(d){              
-            if(d.response){                 
-               alert(d.Men)
+         success: function(d){
+            console.log("REGIS ==> " + d);
+            if(!d.response){                 
+               alert(d.Men);
                window.setTimeout("location.reload()", 2000);
             }else{
-            alert(d.Men)
+               alert(d.Men)
             }
          },
          error: function(err){
@@ -397,6 +422,8 @@ function btn_cli_up(id) {
             $('#txtDoc').val(d.Men.DOC);
             $('#txtNom').val(d.Men.NOM);
             $('#txtAPE').val(d.Men.APE);
+
+            $('#txtTel_').val(d.Men.TEL);
 
             $('#slVend').append(
                '<option value="0">- Seleccione una opción -</option>'

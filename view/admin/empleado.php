@@ -39,7 +39,7 @@ $empleado = $controller->getTableEmpleado()->fetchAll();
                         <a class="nav-link" href="cliente.php">Cliente</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Configuracion</a>
+                    <a class="nav-link" href="config.php">Configuracion</a>
                     </li>
                 </ul> 
             </div>

@@ -15,6 +15,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $usuario="";
     $pass="";
     $rol="";
+    $porc="";
+
+    if(isset($_POST['txtPor'])){
+        $porc = $_POST['txtPor'];
+    }
 
     if(isset($_POST['dato'])){
         $dato = $_POST['dato'];
@@ -78,6 +83,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         case '4':
             $result = $controller->deleteEmpleado($id);
+            break;
+        case '5':
+            $result = $controller->getTablePorcentaje();
+            break;
+        case '6':
+            $result = $controller->setPorcentaje($porc);
             break;
         default:
             # code...

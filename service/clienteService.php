@@ -11,6 +11,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $apellido="";
     $doc="";
     $vendedor="";
+    $tel="";
+
+    if(isset($_POST['txtTel'])){
+        $tel = $_POST['txtTel'];
+    } 
 
     if(isset($_POST['dato'])){
         $dato = $_POST['dato'];
@@ -37,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 
     $controller = new AdminController();
-    $cliente = new ClienteModel($id,$nombre,$apellido,$doc,$vendedor);
+    $cliente = new ClienteModel($id,$nombre,$apellido,$doc,$vendedor,$tel);
 
     $result="";
 
